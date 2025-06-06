@@ -17,10 +17,10 @@ import { FontAwesome } from "@expo/vector-icons";
 
 type Product = {
     id: string;
-    title: string;
+    name: string;
     price: number;
     description: string;
-    imageUrl: string;
+    image: string;
     ticketUrl?: string;
 };
 
@@ -66,9 +66,9 @@ const StoreScreen = () => {
                         style={styles.card}
                         onPress={() => setSelectedProduct(item)}
                     >
-                        <Image source={{ uri: item.imageUrl }} style={styles.image} />
+                        <Image source={{ uri: item.image }} style={styles.image} />
                         <View style={styles.cardContent}>
-                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.title}>{item.name}</Text>
                             <Text style={styles.price}>${item.price}</Text>
                         </View>
                     </TouchableOpacity>
@@ -93,7 +93,7 @@ const StoreScreen = () => {
                                     source={{ uri: selectedProduct.imageUrl }}
                                     style={styles.modalImage}
                                 />
-                                <Text style={styles.modalTitle}>{selectedProduct.title}</Text>
+                                <Text style={styles.modalName}>{selectedProduct.name}</Text>
                                 <Text style={styles.modalPrice}>
                                     Precio: ${selectedProduct.price}
                                 </Text>
