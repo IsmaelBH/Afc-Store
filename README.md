@@ -96,13 +96,13 @@ El proyecto está configurado con Firebase. Podés editar `firebase/firebaseConf
 
 ```ts
 export const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-app",
-  storageBucket: "your-app.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID",
-  databaseURL: "https://your-app-default-rtdb.firebaseio.com"
+    apiKey: "AIzaSyDUOcP7HCUVOmRxED64MHLzMq8di7lCdys",
+    authDomain: "afc-store-6bfef.firebaseapp.com",
+    databaseURL: "https://afc-store-6bfef-default-rtdb.firebaseio.com",
+    projectId: "afc-store-6bfef",
+    storageBucket: "afc-store-6bfef.firebasestorage.app",
+    messagingSenderId: "139179717888",
+    appId: "1:139179717888:web:dd699072cab7ece26b2fe5"
 };
 ```
 
