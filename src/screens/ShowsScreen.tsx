@@ -21,11 +21,11 @@ import { MaterialIcons } from "@expo/vector-icons"; // ubicación
 
 type Show = {
     id: string;
-    title: string;
+    name: string;
     date: string;
     location: string;
     description: string;
-    imageUrl: string;
+    image: string;
     ticketUrl: string;
 };
 
@@ -80,11 +80,11 @@ const ShowsScreen = () => {
                         style={styles.card}
                     >
                         <Image
-                            source={{ uri: item.imageUrl }}
+                            source={{ uri: item.image }}
                             style={styles.cardImage}
                         />
                         <View style={styles.cardText}>
-                            <Text style={styles.title}>{item.title}</Text>
+                            <Text style={styles.title}>{item.name}</Text>
                             <Text style={styles.date}>{item.date}</Text>
                             <Text style={styles.location}>{item.location}</Text>
                         </View>
