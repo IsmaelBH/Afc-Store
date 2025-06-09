@@ -1,154 +1,89 @@
-# AFC Store App
 
-Aplicación móvil desarrollada con **React Native**, **Expo** y **Firebase**, que permite visualizar shows y productos, gestionar un carrito de compras, autenticarse y modificar el perfil con cámara integrada.
+# AFC Store App 🎸🛒
 
----
+Aplicación mobile desarrollada con **React Native + Expo**, como entrega final para el curso de desarrollo mobile en Coderhouse.
 
-## 🔧 Tecnologías utilizadas
+## 📱 Funcionalidades principales
 
-- React Native (con Expo SDK 53)
-- TypeScript
-- Redux Toolkit
-- React Navigation
-- Firebase Auth + Firestore
-- AsyncStorage
-- Expo Camera & Image Picker
-- React Native Modal
-- Expo Vector Icons
+- Registro e inicio de sesión usando **Firebase Auth** (REST API + RTK Query)
+- Pantalla de inicio con navegación a:
+  - **Shows** (con detalles, ubicación y link a tickets)
+  - **Tienda** con productos desde Firestore y lógica de carrito
+  - **Perfil** editable, con cambio de foto usando cámara
+  - **Carrito** persistente y funcional
+- Carrito de compras con:
+  - Agregado de productos desde modal
+  - Suma y resta de unidades con validación por stock
+  - Eliminación individual por ítem
+  - Confirmación de compra con `Alert`
+- Cámara integrada para cambiar la imagen de perfil
+- Persistencia de la imagen con `AsyncStorage` y `expo-file-system`
 
----
+## 🧰 Tecnologías y librerías utilizadas
 
-## 📁 Estructura del proyecto
+- **Expo SDK 53**
+- **React Native**
+- **TypeScript**
+- **React Navigation**
+- **Redux Toolkit + RTK Query**
+- **Firebase (Auth, Firestore, Storage)**
+- **expo-image-picker**
+- **expo-file-system**
+- **@react-native-async-storage/async-storage**
+- **@expo/vector-icons**
+- **@react-navigation/native-stack**
+
+## 🗂️ Estructura del proyecto
 
 ```
-/Afc-Store
-├── App.tsx
-├── assets/
-│   ├── logo.png
-│   └── icons/
+Afc-Store/
 ├── src/
-│   ├── api/
-│   ├── components/
-│   ├── firebase/
-│   ├── navigation/
-│   ├── redux/
-│   ├── screens/
-│   └── types/
+│   ├── api/                  # RTK Query para Firebase Auth REST
+│   ├── components/           # Reutilizables
+│   ├── constants/            # Constantes (e.g., storage keys)
+│   ├── firebase/             # Configuración Firebase
+│   ├── navigation/           # AppNavigator, AuthNavigator, RootNavigator
+│   ├── redux/                # store.ts y slices
+│   ├── screens/              # Home, Store, Shows, Cart, Profile, Auth
+│   └── types/                # Tipado de datos
+├── assets/                   # Imágenes (logo, íconos)
+├── App.tsx
 └── README.md
 ```
 
----
+## 🚀 Cómo correr el proyecto
 
-## 📦 Instalación
-
-1. Clonar el repositorio:
-
+1. Clonar el repo:
 ```bash
 git clone https://github.com/IsmaelBH/Afc-Store.git
 cd Afc-Store
 ```
 
 2. Instalar dependencias:
-
 ```bash
 npm install
 ```
 
-3. Instalar librerías necesarias con Expo:
-
-```bash
-npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
-npx expo install @react-navigation/native @react-navigation/native-stack
-npx expo install @react-native-async-storage/async-storage
-npx expo install expo-camera expo-image-picker expo-file-system
-npx expo install @expo/vector-icons
-npm install @reduxjs/toolkit react-redux
-npm install firebase
-npm install react-native-modal
-```
-
----
-
-## 🚀 Ejecución del proyecto
-
+3. Iniciar Expo:
 ```bash
 npx expo start
 ```
 
-Abrí el proyecto en tu dispositivo con **Expo Go** o en el emulador Android/iOS.
+4. Escanear el QR con Expo Go o correr en emulador.
 
 ---
 
-## 🧠 Funcionalidades
+## 📷 Permisos requeridos
 
-### 🎫 Shows
-- Lectura desde Firestore
-- Imagen, título, fecha, descripción y botón a Google Maps
-- Link a tickets externos
-
-### 🛒 Tienda
-- Lectura de productos desde Firestore
-- Modal con imagen, descripción y botón "Agregar al carrito"
-- Verificación de stock
-
-### 🧺 Carrito
-- Sumar y restar cantidades de productos
-- Eliminar producto individual
-- Confirmar compra con alerta
-- Cálculo total dinámico
-
-### 👤 Perfil
-- Foto de perfil predeterminada (logo)
-- Acceso a la cámara para cambiar la imagen
-- Imagen persistente (guardada en local)
-- Visualización del email autenticado
-- Link "Cerrar sesión" que redirige al login
+- Cámara (`expo-image-picker`)  
+- Acceso al almacenamiento para guardar imagen localmente
 
 ---
 
-## 🔐 Firebase
+## 🔐 Configuración de Firebase
 
-El proyecto utiliza Firebase para:
+Ya se encuentra incluida en `src/firebase/firebase.ts` con los servicios:
 
-- Autenticación con email/contraseña (vía REST API)
-- Firestore para productos y shows
-- Almacenamiento de imágenes en local
-
-Editá `src/firebase/firebase.ts` si querés usar tus propias credenciales:
-
-```ts
-export const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-app",
-  storageBucket: "your-app.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID",
-  databaseURL: "https://your-app-default-rtdb.firebaseio.com"
-};
-```
-
----
-
-## 📸 Permisos necesarios
-
-La app solicita:
-
-- Acceso a la cámara para cambiar la imagen de perfil
-- Acceso al almacenamiento para guardar la imagen localmente
-
----
-
-## 🧪 Próximas mejoras
-
-- Guardar imágenes de perfil en Firebase Storage
-- Historial de compras por usuario autenticado
-- Filtros por categoría en tienda
-- Animaciones sutiles con `react-native-reanimated`
-
----
-
-## 👨‍💻 Autor
-
-Desarrollado por Ismael Barbé.  
-GitHub: [IsmaelBH](https://github.com/IsmaelBH)
+- `auth` → autenticación
+- `db` → Firestore
+- `storage` → para futuras expansiones
