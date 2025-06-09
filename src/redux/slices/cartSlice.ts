@@ -5,6 +5,7 @@ interface Product {
     name: string;
     price: number;
     image: string;
+    stock: number;
 }
 
 interface CartState {
@@ -28,8 +29,14 @@ const cartSlice = createSlice({
         clearCart(state) {
             state.items = [];
         },
+        decreaseQuantity(state, action: PayloadAction<string>) {
+            const index = state.items.findIndex(item => item.id === action.payload);
+            if (index !== -1) {
+                state.items.splice(index, 1);
+            }
+        },
     },
 });
 
-export const { addToCart, removeFromCart, clearCart } = cartSlice.actions;
+export const { addToCart, removeFromCart, clearCart, decreaseQuantity } = cartSlice.actions;
 export default cartSlice.reducer;

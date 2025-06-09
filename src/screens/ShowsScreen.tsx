@@ -67,7 +67,7 @@ export default function ShowsScreen() {
     return (
         <View style={styles.container}>
             <StatusBar barStyle="light-content" />
-            <Text style={styles.textNextShows}>Next Shows</Text>
+
             <FlatList
                 data={shows}
                 keyExtractor={(item) => item.id}
@@ -136,14 +136,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#111",
         flex: 1,
         padding: 10,
-    },
-    textNextShows: {
-        color: "#fff",
-        fontSize: 20,
-        fontWeight: "bold",
-        marginTop: 20,
-        marginBottom: 10,
-        textAlign: "center"
+        marginTop: 25,
     },
     loadingContainer: {
         flex: 1,
