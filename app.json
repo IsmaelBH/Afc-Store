@@ -16,7 +16,8 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "edgeToEdgeEnabled": true
+      "edgeToEdgeEnabled": true,
+      "package": "com.ismael21986.AfcStore"
     },
     "web": {
       "bundler": "metro",
@@ -35,6 +36,11 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "eas": {
+        "projectId": "0f931cd0-b26f-4bc9-aff9-2ed2fb03a98e"
+      }
     }
   }
 }
