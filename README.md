@@ -1,105 +1,132 @@
+
 # AFC Store App
 
-Aplicación móvil de e-commerce desarrollada con React Native y Expo, destinada a una tienda de instrumentos musicales y merchandising de AFC.
+Aplicación móvil desarrollada con **React Native**, **Expo** y **Firebase**, que permite visualizar shows y productos, gestionar un carrito de compras, y acceder a un perfil personalizado.
 
-## Funcionalidades
+## 🔧 Tecnologías utilizadas
 
-- 🔐 Registro e inicio de sesión con Firebase Auth.
-- 🛍️ Visualización de productos y shows desde Firebase Firestore.
-- 🛒 Carrito de compras con Redux Toolkit.
-- 📸 Subida de foto de perfil con cámara y Firebase Storage.
-- 🗂️ Historial de compras por usuario autenticado.
-- 📶 Sincronización offline y persistencia de datos con SQLite.
-- 🌐 Navegación con React Navigation.
-- 💅 Diseño personalizado con íconos e imágenes propias.
-- 🧾 Documentación completa.
+- React Native (con Expo)
+- TypeScript
+- React Navigation
+- Redux Toolkit
+- Firebase (Auth, Firestore, Storage)
+- Expo Camera
+- SQLite
+- RTK Query
+- React Native Modal
+- React Native Vector Icons
 
-## Instalación
+## 📁 Estructura del proyecto
 
-1. Clona este repositorio:
+```
+/Afc-Store
+├── App.tsx
+├── assets/
+│   └── logo.png
+│   └── icons/
+├── components/
+├── firebase/
+│   └── firebase.ts
+├── navigation/
+│   └── RootNavigation.tsx
+├── redux/
+│   ├── slices/
+│   └── store.ts
+├── screens/
+│   ├── Auth/
+│   ├── HomeScreen.tsx
+│   ├── StoreScreen.tsx
+│   ├── ShowsScreen.tsx
+│   ├── CartScreen.tsx
+│   └── ProfileScreen.tsx
+├── types/
+└── README.md
+```
+
+## 📦 Instalación
+
+1. Clonar el repositorio:
+
 ```bash
 git clone https://github.com/IsmaelBH/Afc-Store.git
 cd Afc-Store
 ```
 
-2. Instala las dependencias:
+2. Instalar Expo CLI si no lo tenés:
+
 ```bash
-npm install
+npm install -g expo-cli
 ```
 
-3. Inicia el proyecto con Expo:
+3. Instalar dependencias del proyecto:
+
+```bash
+npm install
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+npx expo install @react-navigation/native @react-navigation/native-stack
+npm install @reduxjs/toolkit react-redux
+npm install firebase
+npm install react-native-modal
+npm install react-native-vector-icons
+npm install @react-native-async-storage/async-storage
+npx expo install expo-camera expo-image-picker expo-file-system expo-media-library expo-document-picker
+npm install @react-native-sqlite-storage/sqlite
+```
+
+## 🧠 Funcionalidades
+
+### 🪩 Shows
+- Cards con título, imagen, fecha, lugar
+- Modal con descripción y botón a Google Maps
+- Botón “Entradas” redirige al sitio externo
+
+### 🛍️ Tienda
+- Lectura de productos desde Firebase
+- Modal con descripción y botón “Agregar al carrito”
+- Validación de stock
+
+### 🛒 Carrito
+- Agrupación por producto
+- Aumentar/disminuir cantidad (validando stock)
+- Eliminar individualmente
+- Confirmar compra (simulada)
+
+### 👤 Perfil
+- Muestra email del usuario
+- Foto de perfil (editable con cámara)
+- Botón cerrar sesión
+
+### 🔐 Autenticación
+- Registro e inicio de sesión con Firebase Auth REST API
+- Persistencia de sesión con Redux
+
+## 🔐 Firebase
+
+Reemplazar los valores en `src/firebase/firebase.ts` con tus propias credenciales:
+
+```ts
+const firebaseConfig = {
+  apiKey: "API_KEY",
+  authDomain: "your-app.firebaseapp.com",
+  projectId: "your-app",
+  storageBucket: "your-app.appspot.com",
+  messagingSenderId: "SENDER_ID",
+  appId: "APP_ID"
+};
+```
+
+## 🚀 Ejecutar localmente
+
 ```bash
 npx expo start
 ```
 
-## Dependencias necesarias
-
-```bash
-# Expo y React Native
-npx create-expo-app@latest
-npm install expo react-native
-
-# Navegación
-npm install @react-navigation/native @react-navigation/native-stack
-npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
-
-# Redux Toolkit
-npm install @reduxjs/toolkit react-redux
-
-# RTK Query para Firebase REST
-npm install @reduxjs/toolkit-query react
-
-# Firebase
-npm install firebase
-
-# SQLite para persistencia
-npx expo install expo-sqlite
-
-# Expo Camera y FileSystem
-npx expo install expo-camera expo-file-system
-
-# Firebase Storage con imágenes
-npx expo install expo-media-library
-
-# Íconos
-npx expo install @expo/vector-icons
-
-# TypeScript (si aún no lo tenés)
-npm install --save-dev typescript
-```
-
-## Configuración de Firebase
-
-Crea un proyecto en [Firebase](https://console.firebase.google.com/) y configura:
-
-- Authentication (modo Email/Password).
-- Firestore Database.
-- Storage (para imágenes de perfil).
-- Realtime Database (opcional si usás para historial).
-
-Copia tu configuración en `src/firebase/firebase.ts`.
+Abrí la app con Expo Go o un emulador.
 
 ---
 
-## Estructura del proyecto
+## ✅ Próximos pasos
 
-```
-src/
-│
-├── api/                  # RTK Query services
-├── assets/               # Imágenes, íconos y logo
-├── components/           # Componentes reutilizables
-├── firebase/             # Configuración Firebase
-├── navigation/           # Archivos de navegación
-├── redux/                # Store, slices, hooks
-├── screens/              # Pantallas (Home, Store, Shows, etc)
-├── types/                # Tipos globales
-└── App.tsx               # Entry point
-```
-
----
-
-## Autor
-
-- Desarrollado por **Ismael Barbé**
-- Proyecto final para **Coderhouse React Native** 🧑‍💻
+- Subida y vista de historial de compras
+- Noticias del centro en HomeScreen
+- Modo offline completo y sincronización
