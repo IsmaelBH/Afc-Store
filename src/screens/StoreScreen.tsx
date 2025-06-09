@@ -8,6 +8,7 @@ import {
     Modal,
     Image,
     ActivityIndicator,
+    Alert
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
@@ -46,10 +47,11 @@ const StoreScreen = () => {
     const handleAddToCart = () => {
         if (selectedProduct) {
             dispatch(addToCart(selectedProduct));
+            Alert.alert('Producto agregado', 'El producto fue añadido al carrito.');
             setSelectedProduct(null);
-            navigation.navigate('Cart' as never);
         }
     };
+
 
     if (loading) {
         return (

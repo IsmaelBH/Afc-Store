@@ -30,7 +30,7 @@ const LoginScreen = () => {
             const response: any = await login({ email, password });
             if (response?.data) {
                 dispatch(setUser(response.data));
-                navigation.navigate('Home');
+                // ❌ navigation.navigate('Home'); <- esta línea ya no es necesaria
             } else {
                 Alert.alert('Error', 'Credenciales incorrectas o problema con el servidor.');
             }
@@ -74,7 +74,7 @@ export default LoginScreen;
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#000', // fondo negro
+        backgroundColor: '#000',
         alignItems: 'center',
         justifyContent: 'center',
         padding: 20,

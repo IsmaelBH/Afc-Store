@@ -138,9 +138,9 @@ const styles = StyleSheet.create({
     },
     qtyButton: {
         backgroundColor: '#333',
-        paddingHorizontal: 10,
+        paddingHorizontal: 8,
         paddingVertical: 4,
-        borderRadius: 5,
+        borderRadius: 4,
     },
     qtyButtonText: {
         color: '#fff',

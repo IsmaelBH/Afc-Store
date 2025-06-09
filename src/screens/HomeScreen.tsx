@@ -51,8 +51,8 @@ const styles = StyleSheet.create({
         paddingHorizontal: 10,
     },
     icon: {
-        width: 30,
-        height: 30,
+        width: 28,
+        height: 28,
         marginHorizontal: 10,
     },
 });
