@@ -1,132 +1,159 @@
 
-# AFC Store App
+# 🎸 AFC Store - E-Commerce Mobile App
 
-Aplicación móvil desarrollada con **React Native**, **Expo** y **Firebase**, que permite visualizar shows y productos, gestionar un carrito de compras, y acceder a un perfil personalizado.
+**Proyecto final - Coderhouse React Native**  
+Autor: Ismael Barbé
 
-## 🔧 Tecnologías utilizadas
+---
 
-- React Native (con Expo)
-- TypeScript
-- React Navigation
-- Redux Toolkit
-- Firebase (Auth, Firestore, Storage)
-- Expo Camera
-- SQLite
-- RTK Query
-- React Native Modal
-- React Native Vector Icons
+## 📱 Descripción
 
-## 📁 Estructura del proyecto
+AFC Store es una app de e-commerce para Android desarrollada en **React Native con Expo SDK 53**, que permite a los usuarios:
+
+- Registrarse e iniciar sesión 🔐  
+- Ver productos y agregarlos al carrito 🛒  
+- Comprar entradas a shows 🎫  
+- Ver sus compras anteriores 🧾  
+- Editar su perfil con foto desde la cámara 📸  
+- Cerrar sesión 🔓  
+
+La app incluye sincronización offline con SQLite y Firebase, brindando una experiencia fluida incluso sin conexión.
+
+---
+
+## 🗂️ Estructura de Carpetas
 
 ```
-/Afc-Store
-├── App.tsx
-├── assets/
-│   └── logo.png
-│   └── icons/
-├── components/
-├── firebase/
-│   └── firebase.ts
-├── navigation/
-│   └── RootNavigation.tsx
-├── redux/
-│   ├── slices/
-│   └── store.ts
-├── screens/
-│   ├── Auth/
-│   ├── HomeScreen.tsx
-│   ├── StoreScreen.tsx
-│   ├── ShowsScreen.tsx
-│   ├── CartScreen.tsx
-│   └── ProfileScreen.tsx
-├── types/
-└── README.md
+Afc-Store/
+│
+├── assets/                # Imágenes e íconos
+│
+├── src/
+│   ├── api/               # Servicios RTK Query (auth, etc.)
+│   ├── components/        # Componentes reutilizables
+│   ├── firebase/          # Configuración de Firebase
+│   ├── navigation/        # AppNavigator, AuthNavigator, RootNavigator
+│   ├── redux/
+│   │   ├── slices/        # Slices (auth, cart)
+│   │   └── store.ts       # Configuración de Redux Toolkit
+│   ├── screens/           # Todas las pantallas
+│   │   ├── AuthScreen.tsx
+│   │   ├── HomeScreen.tsx
+│   │   ├── StoreScreen.tsx
+│   │   ├── CartScreen.tsx
+│   │   ├── ProfileScreen.tsx
+│   │   ├── ShowsScreen.tsx
+│   ├── sqlite/            # Config SQLite para historial de compras
+│   └── types/             # Tipos TypeScript
+│
+├── App.tsx                # Punto de entrada
+├── app.json               # Configuración de Expo
+├── eas.json               # Configuración de build EAS
+└── README.md              # Este archivo
 ```
 
-## 📦 Instalación
+---
 
-1. Clonar el repositorio:
+## 🔧 Tecnologías y Dependencias
+
+### 📦 Core
+
+```bash
+npm install
+```
+
+### 📱 React Navigation
+
+```bash
+npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
+npx expo install @react-navigation/native @react-navigation/native-stack
+```
+
+### ⚙️ Redux Toolkit
+
+```bash
+npm install @reduxjs/toolkit react-redux
+```
+
+### 🔥 Firebase
+
+```bash
+npm install firebase
+```
+
+### 🛒 Otros
+
+```bash
+npm install react-native-modal
+npm install react-native-vector-icons
+npm install @react-native-async-storage/async-storage
+```
+
+### 📸 Acceso a dispositivos
+
+```bash
+npx expo install expo-camera expo-image-picker expo-file-system expo-media-library expo-document-picker
+```
+
+### 💾 SQLite
+
+```bash
+npm install @react-native-sqlite-storage/sqlite
+```
+
+---
+
+## 🚀 Cómo correr la app
+
+1. Cloná el repositorio:
 
 ```bash
 git clone https://github.com/IsmaelBH/Afc-Store.git
 cd Afc-Store
 ```
 
-2. Instalar Expo CLI si no lo tenés:
-
-```bash
-npm install -g expo-cli
-```
-
-3. Instalar dependencias del proyecto:
+2. Instalá las dependencias:
 
 ```bash
 npm install
-npx expo install react-native-screens react-native-safe-area-context react-native-gesture-handler react-native-reanimated
-npx expo install @react-navigation/native @react-navigation/native-stack
-npm install @reduxjs/toolkit react-redux
-npm install firebase
-npm install react-native-modal
-npm install react-native-vector-icons
-npm install @react-native-async-storage/async-storage
-npx expo install expo-camera expo-image-picker expo-file-system expo-media-library expo-document-picker
-npm install @react-native-sqlite-storage/sqlite
 ```
 
-## 🧠 Funcionalidades
-
-### 🪩 Shows
-- Cards con título, imagen, fecha, lugar
-- Modal con descripción y botón a Google Maps
-- Botón “Entradas” redirige al sitio externo
-
-### 🛍️ Tienda
-- Lectura de productos desde Firebase
-- Modal con descripción y botón “Agregar al carrito”
-- Validación de stock
-
-### 🛒 Carrito
-- Agrupación por producto
-- Aumentar/disminuir cantidad (validando stock)
-- Eliminar individualmente
-- Confirmar compra (simulada)
-
-### 👤 Perfil
-- Muestra email del usuario
-- Foto de perfil (editable con cámara)
-- Botón cerrar sesión
-
-### 🔐 Autenticación
-- Registro e inicio de sesión con Firebase Auth REST API
-- Persistencia de sesión con Redux
-
-## 🔐 Firebase
-
-Reemplazar los valores en `src/firebase/firebase.ts` con tus propias credenciales:
-
-```ts
-const firebaseConfig = {
-  apiKey: "API_KEY",
-  authDomain: "your-app.firebaseapp.com",
-  projectId: "your-app",
-  storageBucket: "your-app.appspot.com",
-  messagingSenderId: "SENDER_ID",
-  appId: "APP_ID"
-};
-```
-
-## 🚀 Ejecutar localmente
+3. Iniciá Expo:
 
 ```bash
 npx expo start
 ```
 
-Abrí la app con Expo Go o un emulador.
+> Asegurate de tener Expo Go en tu dispositivo Android para escanear el QR y probar la app.
 
 ---
 
-## ✅ Próximos pasos
+## 🛠️ Build para Android
 
-- Subida y vista de historial de compras
-- Noticias del centro en HomeScreen
-- Modo offline completo y sincronización
+```bash
+eas build --platform android --profile production
+```
+
+---
+
+## 🧠 Opcional: Ideas para futuras versiones
+
+- 🧾 Visualizar historial completo de compras
+- 💳 Pasarela de pago integrada
+- 🌐 Modo multilenguaje (es/en)
+- 🧠 Dark mode
+- 📍 Mapa de ubicaciones para shows
+
+---
+
+## ✅ Estado
+
+🎉 App funcional y entregada  
+📦 Último commit incluye autenticación, carrito, cámara, Firebase, SQLite y diseño optimizado.
+
+---
+
+## 🧑‍💻 Contacto
+
+📧 ismaelbarbe@gmail.com  
+🌐 [GitHub - IsmaelBH](https://github.com/IsmaelBH)
