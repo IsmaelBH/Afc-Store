@@ -1,3 +1,4 @@
+// ProfileScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -17,7 +18,7 @@ import { PROFILE_IMAGE_KEY } from '../constants/storageKeys';
 import { MaterialIcons } from '@expo/vector-icons';
 
 export default function ProfileScreen() {
-    const user = useSelector((state: RootState) => state.auth);
+    const { email, fullName } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
     const [imageUri, setImageUri] = useState<string | null>(null);
 
@@ -33,9 +34,7 @@ export default function ProfileScreen() {
 
     const openCamera = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
-        const hasPermission = status === 'granted';
-
-        if (!hasPermission) {
+        if (status !== 'granted') {
             Alert.alert('Acceso denegado', 'Por favor habilita la cámara desde ajustes.');
             return;
         }
@@ -52,11 +51,7 @@ export default function ProfileScreen() {
             const newPath = FileSystem.documentDirectory + fileName;
 
             try {
-                await FileSystem.copyAsync({
-                    from: sourceUri,
-                    to: newPath,
-                });
-
+                await FileSystem.copyAsync({ from: sourceUri, to: newPath });
                 await AsyncStorage.setItem(PROFILE_IMAGE_KEY, newPath);
                 setImageUri(newPath);
             } catch (error) {
@@ -77,13 +72,17 @@ export default function ProfileScreen() {
                 </TouchableOpacity>
             </View>
 
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.email}>{user.email}</Text>
+            {fullName ? (
+                <>
+                    <Text style={styles.label}>Nombre:</Text>
+                    <Text style={styles.email}>{fullName}</Text>
+                </>
+            ) : null}
 
-            <TouchableOpacity
-                style={styles.logoutContainer}
-                onPress={() => dispatch(logout())}
-            >
+            <Text style={styles.label}>Email:</Text>
+            <Text style={styles.email}>{email}</Text>
+
+            <TouchableOpacity style={styles.logoutContainer} onPress={() => dispatch(logout())}>
                 <Text style={styles.logoutText}>Cerrar sesión</Text>
             </TouchableOpacity>
         </View>
@@ -96,7 +95,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         padding: 20,
         alignItems: 'center',
-
     },
     profileImageContainer: {
         position: 'relative',

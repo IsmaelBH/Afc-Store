@@ -52,10 +52,11 @@ const LoginScreen = () => {
             />
             <TextInput
                 placeholder="Contraseña"
+                placeholderTextColor="#999"
                 style={styles.input}
                 value={password}
                 onChangeText={setPassword}
-                secureTextEntry
+                secureTextEntry={true}
             />
 
             <TouchableOpacity onPress={onSubmit} style={styles.button}>

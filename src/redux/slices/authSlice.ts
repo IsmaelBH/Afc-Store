@@ -1,25 +1,35 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { createSlice } from '@reduxjs/toolkit';
 
-interface AuthState {
-    email: string;
-    idToken: string;
-    localId: string;
+interface UserState {
+    email: string | null;
+    idToken: string | null;
+    localId: string | null;
+    fullName?: string | null; // ✅ Agregado
 }
 
-const initialState: AuthState = {
-    email: '',
-    idToken: '',
-    localId: '',
+const initialState: UserState = {
+    email: null,
+    idToken: null,
+    localId: null,
+    fullName: null, // ✅ Inicializado
 };
 
 const authSlice = createSlice({
     name: 'auth',
     initialState,
     reducers: {
-        setUser: (state, action: PayloadAction<AuthState>) => {
-            return action.payload;
+        setUser: (state, action) => {
+            state.email = action.payload.email;
+            state.idToken = action.payload.idToken;
+            state.localId = action.payload.localId;
+            state.fullName = action.payload.fullName || null; // ✅ Nuevo campo
         },
-        logout: () => initialState,
+        logout: (state) => {
+            state.email = null;
+            state.idToken = null;
+            state.localId = null;
+            state.fullName = null; // ✅ También lo limpiamos
+        },
     },
 });
 

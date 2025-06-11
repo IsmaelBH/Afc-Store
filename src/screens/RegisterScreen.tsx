@@ -1,3 +1,4 @@
+// RegisterScreen.tsx
 import React, { useState } from 'react';
 import {
     View,
@@ -18,6 +19,7 @@ type Props = NativeStackScreenProps<AuthStackParamList, 'Register'>;
 
 const RegisterScreen = ({ navigation }: Props) => {
     const [email, setEmail] = useState('');
+    const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
     const [triggerSignup] = useSignupMutation();
     const dispatch = useDispatch();
@@ -35,6 +37,7 @@ const RegisterScreen = ({ navigation }: Props) => {
                     email: response.email,
                     idToken: response.idToken,
                     localId: response.localId,
+                    fullName, // Esto queda guardado localmente (luego lo puedes persistir en Firestore)
                 })
             );
         } catch (err: any) {
@@ -48,6 +51,14 @@ const RegisterScreen = ({ navigation }: Props) => {
             <Text style={styles.title}>Registrarse</Text>
 
             <TextInput
+                placeholder="Nombre completo"
+                placeholderTextColor="#aaa"
+                style={styles.input}
+                value={fullName}
+                onChangeText={setFullName}
+            />
+
+            <TextInput
                 placeholder="Email"
                 placeholderTextColor="#aaa"
                 style={styles.input}
@@ -59,7 +70,7 @@ const RegisterScreen = ({ navigation }: Props) => {
 
             <TextInput
                 placeholder="Contraseña"
-                placeholderTextColor="#aaa"
+                placeholderTextColor="#999"
                 style={styles.input}
                 value={password}
                 onChangeText={setPassword}
