@@ -1,4 +1,3 @@
-// ProfileScreen.tsx
 import React, { useEffect, useState } from 'react';
 import {
     View,
@@ -7,6 +6,8 @@ import {
     Image,
     Alert,
     TouchableOpacity,
+    FlatList,
+    ScrollView,
 } from 'react-native';
 import * as ImagePicker from 'expo-image-picker';
 import * as FileSystem from 'expo-file-system';
@@ -16,11 +17,13 @@ import { RootState } from '../redux/store';
 import { logout } from '../redux/slices/authSlice';
 import { PROFILE_IMAGE_KEY } from '../constants/storageKeys';
 import { MaterialIcons } from '@expo/vector-icons';
+import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function ProfileScreen() {
-    const { email, fullName } = useSelector((state: RootState) => state.auth);
+    const { email, fullName, localId } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
     const [imageUri, setImageUri] = useState<string | null>(null);
+    const [purchases, setPurchases] = useState<any[]>([]);
 
     useEffect(() => {
         const loadImage = async () => {
@@ -30,6 +33,20 @@ export default function ProfileScreen() {
             }
         };
         loadImage();
+
+        if (localId) {
+            const db = getDatabase();
+            const dbRef = ref(db, `purchases/${localId}`);
+            onValue(dbRef, (snapshot) => {
+                const data = snapshot.val();
+                if (data) {
+                    const parsed = Object.values(data);
+                    setPurchases(parsed.reverse());
+                } else {
+                    setPurchases([]);
+                }
+            });
+        }
     }, []);
 
     const openCamera = async () => {
@@ -60,27 +77,56 @@ export default function ProfileScreen() {
         }
     };
 
+    const renderPurchaseCard = ({ item }: { item: any }) => (
+        <View style={styles.card}>
+            <Text style={styles.dateText}>
+                📅 {new Date(item.date).toLocaleDateString()}
+            </Text>
+            <Text style={styles.totalText}>
+                💰 Total: ${item.total}
+            </Text>
+            {item.items.map((prod: any, idx: number) => (
+                <Text key={idx} style={styles.productText}>
+                    • {prod.name} x{prod.quantity}
+                </Text>
+            ))}
+        </View>
+    );
+
     return (
         <View style={styles.container}>
-            <View style={styles.profileImageContainer}>
-                <Image
-                    source={imageUri ? { uri: imageUri } : require('../../assets/logo.png')}
-                    style={styles.profileImage}
-                />
-                <TouchableOpacity style={styles.cameraIcon} onPress={openCamera}>
-                    <MaterialIcons name="photo-camera" size={24} color="#fff" />
-                </TouchableOpacity>
-            </View>
+            <ScrollView contentContainerStyle={{ paddingBottom: 140 }}>
+                <View style={styles.profileImageContainer}>
+                    <Image
+                        source={imageUri ? { uri: imageUri } : require('../../assets/logo.png')}
+                        style={styles.profileImage}
+                    />
+                    <TouchableOpacity style={styles.cameraIcon} onPress={openCamera}>
+                        <MaterialIcons name="photo-camera" size={24} color="#fff" />
+                    </TouchableOpacity>
+                </View>
 
-            {fullName ? (
-                <>
-                    <Text style={styles.label}>Nombre:</Text>
-                    <Text style={styles.email}>{fullName}</Text>
-                </>
-            ) : null}
+                {fullName && (
+                    <>
+                        <Text style={styles.label}>Nombre:</Text>
+                        <Text style={styles.info}>{fullName}</Text>
+                    </>
+                )}
+                <Text style={styles.label}>Email:</Text>
+                <Text style={styles.info}>{email}</Text>
 
-            <Text style={styles.label}>Email:</Text>
-            <Text style={styles.email}>{email}</Text>
+                {purchases.length > 0 && (
+                    <>
+                        <Text style={[styles.label, { marginTop: 30 }]}>Historial de compras:</Text>
+                        <FlatList
+                            data={purchases}
+                            keyExtractor={(_, index) => index.toString()}
+                            renderItem={renderPurchaseCard}
+                            scrollEnabled={false}
+                        />
+                    </>
+                )}
+            </ScrollView>
 
             <TouchableOpacity style={styles.logoutContainer} onPress={() => dispatch(logout())}>
                 <Text style={styles.logoutText}>Cerrar sesión</Text>
@@ -94,21 +140,21 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000',
         padding: 20,
-        alignItems: 'center',
     },
     profileImageContainer: {
         position: 'relative',
-        marginTop: 180,
+        alignItems: 'center',
+        marginTop: 60,
     },
     profileImage: {
-        width: 150,
-        height: 150,
-        borderRadius: 75,
+        width: 140,
+        height: 140,
+        borderRadius: 70,
     },
     cameraIcon: {
         position: 'absolute',
         bottom: 0,
-        right: 0,
+        right: 110,
         backgroundColor: '#555',
         borderRadius: 20,
         padding: 6,
@@ -116,9 +162,9 @@ const styles = StyleSheet.create({
     label: {
         color: '#aaa',
         fontSize: 16,
-        marginTop: 40,
+        marginTop: 20,
     },
-    email: {
+    info: {
         color: '#fff',
         fontSize: 18,
         fontWeight: 'bold',
@@ -127,11 +173,35 @@ const styles = StyleSheet.create({
     logoutContainer: {
         position: 'absolute',
         bottom: 30,
+        left: 0,
+        right: 0,
+        alignItems: 'center',
     },
     logoutText: {
         color: '#64b5f6',
         fontSize: 14,
         textDecorationLine: 'underline',
-        marginBottom: 50,
+        marginBottom: 20,
+    },
+    card: {
+        backgroundColor: '#222',
+        borderRadius: 10,
+        padding: 12,
+        marginTop: 12,
+    },
+    dateText: {
+        color: '#ccc',
+        fontSize: 14,
+        marginBottom: 4,
+    },
+    totalText: {
+        color: '#fff',
+        fontSize: 16,
+        fontWeight: 'bold',
+        marginBottom: 6,
+    },
+    productText: {
+        color: '#aaa',
+        fontSize: 14,
     },
 });

@@ -1,11 +1,21 @@
 import React from 'react';
-import { View, Text, FlatList, Image, TouchableOpacity, StyleSheet, Alert } from 'react-native';
+import {
+    View,
+    Text,
+    FlatList,
+    Image,
+    TouchableOpacity,
+    StyleSheet,
+    Alert,
+} from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from '../redux/store';
 import { addToCart, removeFromCart, clearCart, decreaseQuantity } from '../redux/slices/cartSlice';
+import { getDatabase, ref, push, set } from 'firebase/database';
 
 export default function CartScreen() {
     const cartItems = useSelector((state: RootState) => state.cart.items);
+    const user = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
 
     const groupedItems = cartItems.reduce((acc: { [key: string]: any }, item) => {
@@ -18,13 +28,38 @@ export default function CartScreen() {
     }, {});
 
     const items = Object.values(groupedItems);
-
     const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
 
-    const confirmPurchase = () => {
-        Alert.alert('¡Gracias por tu compra!', `Total: $${total}`, [
-            { text: 'OK', onPress: () => dispatch(clearCart()) },
-        ]);
+    const confirmPurchase = async () => {
+        if (!user.localId) {
+            Alert.alert('Error', 'Debes estar logueado para comprar.');
+            return;
+        }
+
+        try {
+            const db = getDatabase();
+            const purchaseRef = ref(db, `purchases/${user.localId}`);
+            const newPurchaseRef = push(purchaseRef);
+
+            const purchaseData = {
+                date: new Date().toISOString(),
+                total,
+                items: items.map((item) => ({
+                    id: item.id,
+                    name: item.name,
+                    quantity: item.quantity,
+                    price: item.price,
+                })),
+            };
+
+            await set(newPurchaseRef, purchaseData);
+
+            dispatch(clearCart());
+            Alert.alert('¡Gracias por tu compra!', `Total: $${total}`);
+        } catch (error) {
+            console.log('ERROR COMPRA:', error);
+            Alert.alert('Error', 'No se pudo completar la compra');
+        }
     };
 
     return (

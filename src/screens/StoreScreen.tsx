@@ -8,22 +8,24 @@ import {
     Modal,
     Image,
     ActivityIndicator,
-    Alert
+    Alert,
+    Animated,
+    Dimensions
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase/firebase';
 import { Product } from '../types';
-import { useNavigation } from '@react-navigation/native';
+
+const { width } = Dimensions.get('window');
 
 const StoreScreen = () => {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
-
     const dispatch = useDispatch();
-    const navigation = useNavigation();
+    const scrollX = new Animated.Value(0);
 
     const fetchProducts = async () => {
         try {
@@ -52,7 +54,6 @@ const StoreScreen = () => {
         }
     };
 
-
     if (loading) {
         return (
             <View style={styles.loadingContainer}>
@@ -63,6 +64,31 @@ const StoreScreen = () => {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.storeText}>Destacados</Text>
+            <Animated.FlatList
+                data={products.slice(0, 3)}
+                keyExtractor={(item) => item.id}
+                horizontal
+                showsHorizontalScrollIndicator={false}
+                pagingEnabled
+                snapToAlignment="center"
+                decelerationRate="fast"
+                contentContainerStyle={{ paddingHorizontal: 10 }}
+                onScroll={Animated.event(
+                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
+                    { useNativeDriver: false }
+                )}
+                renderItem={({ item, index }) => (
+                    <TouchableOpacity
+                        style={styles.featuredCard}
+                        onPress={() => setSelectedProduct(item)}
+                    >
+                        <Image source={{ uri: item.image }} style={styles.featuredImage} />
+                        <Text style={styles.featuredTitle}>{item.name}</Text>
+                        <Text style={styles.featuredPrice}>${item.price}</Text>
+                    </TouchableOpacity>
+                )}
+            />
 
             <FlatList
                 data={products}
@@ -116,7 +142,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#111',
         flex: 1,
         padding: 10,
-        marginTop: 25,
+    },
+    storeText: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 15,
+        textAlign: 'center',
     },
     loadingContainer: {
         flex: 1,
@@ -124,21 +156,39 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    featuredCard: {
+        backgroundColor: '#222',
+        borderRadius: 12,
+        marginRight: 16,
+        width: width * 0.8,
+        alignItems: 'center',
+        padding: 12,
+    },
+    featuredImage: {
+        width: '100%',
+        height: 280,
+        borderRadius: 10,
+        marginBottom: 10,
+    },
+    featuredTitle: {
+        color: '#fff',
+        fontSize: 18,
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    featuredPrice: {
+        color: '#ccc',
+        fontSize: 16,
+        marginTop: 4,
+    },
     card: {
         backgroundColor: '#222',
-        marginBottom: 12,
+        marginTop: 8,
         borderRadius: 10,
         padding: 12,
         flexDirection: 'row',
         alignItems: 'center',
-    },
-    storeText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 20,
-        marginBottom: 10,
-        textAlign: 'center',
+
     },
     image: {
         width: 90,
