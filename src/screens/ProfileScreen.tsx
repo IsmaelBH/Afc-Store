@@ -117,7 +117,7 @@ export default function ProfileScreen() {
 
                 {purchases.length > 0 && (
                     <>
-                        <Text style={[styles.label, { marginTop: 30 }]}>Historial de compras:</Text>
+                        <Text style={[styles.label, { marginTop: 30, }]}>Historial de compras:</Text>
                         <FlatList
                             data={purchases}
                             keyExtractor={(_, index) => index.toString()}

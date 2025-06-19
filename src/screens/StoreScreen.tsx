@@ -73,7 +73,7 @@ const StoreScreen = () => {
                 pagingEnabled
                 snapToAlignment="center"
                 decelerationRate="fast"
-                contentContainerStyle={{ paddingHorizontal: 10 }}
+                contentContainerStyle={{ paddingHorizontal: 10, marginTop: 20, paddingBottom: 300 }}
                 onScroll={Animated.event(
                     [{ nativeEvent: { contentOffset: { x: scrollX } } }],
                     { useNativeDriver: false }
@@ -85,7 +85,7 @@ const StoreScreen = () => {
                     >
                         <Image source={{ uri: item.image }} style={styles.featuredImage} />
                         <Text style={styles.featuredTitle}>{item.name}</Text>
-                        <Text style={styles.featuredPrice}>${item.price}</Text>
+                        {/* <Text style={styles.featuredPrice}>${item.price}</Text> */}
                     </TouchableOpacity>
                 )}
             />
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
         color: '#fff',
         fontSize: 20,
         fontWeight: 'bold',
-        marginTop: 15,
+        marginTop: 35,
         textAlign: 'center',
     },
     loadingContainer: {
@@ -166,7 +166,7 @@ const styles = StyleSheet.create({
     },
     featuredImage: {
         width: '100%',
-        height: 280,
+        height: 300,
         borderRadius: 10,
         marginBottom: 10,
     },

@@ -28,7 +28,9 @@ export default function CartScreen() {
     }, {});
 
     const items = Object.values(groupedItems);
-    const total = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
+    const tax = subtotal * 0.21;
+    const total = subtotal + tax;
 
     const confirmPurchase = async () => {
         if (!user.localId) {
@@ -55,7 +57,7 @@ export default function CartScreen() {
             await set(newPurchaseRef, purchaseData);
 
             dispatch(clearCart());
-            Alert.alert('¡Gracias por tu compra!', `Total: $${total}`);
+            Alert.alert('¡Gracias por tu compra!', `Total: $${total.toFixed(2)}`);
         } catch (error) {
             console.log('ERROR COMPRA:', error);
             Alert.alert('Error', 'No se pudo completar la compra');
@@ -64,6 +66,7 @@ export default function CartScreen() {
 
     return (
         <View style={styles.container}>
+            <Text style={styles.title}>Carrito</Text>
             {items.length === 0 ? (
                 <Text style={styles.emptyText}>Tu carrito está vacío</Text>
             ) : (
@@ -75,9 +78,9 @@ export default function CartScreen() {
                             <View style={styles.card}>
                                 <Image source={{ uri: item.image }} style={styles.image} />
                                 <View style={styles.info}>
-                                    <Text style={styles.title}>{item.name}</Text>
+                                    <Text style={styles.itemTitle}>{item.name}</Text>
                                     <View style={styles.controlsRow}>
-                                        <Text style={styles.price}>${item.price * item.quantity} x{item.quantity}</Text>
+                                        <Text style={styles.price}>${(item.price * item.quantity).toFixed(2)} x{item.quantity}</Text>
 
                                         <TouchableOpacity
                                             style={styles.qtyButton}
@@ -114,7 +117,10 @@ export default function CartScreen() {
                     />
 
                     <View style={styles.totalContainer}>
-                        <Text style={styles.totalText}>Total: ${total}</Text>
+                        <View style={styles.row}><Text style={styles.label}>Subtotal:</Text><Text style={styles.amount}>${subtotal.toFixed(2)}</Text></View>
+                        <View style={styles.row}><Text style={styles.label}>IVA (21%):</Text><Text style={styles.amount}>${tax.toFixed(2)}</Text></View>
+                        <View style={styles.row}><Text style={styles.label}>Total:</Text><Text style={styles.amount}>${total.toFixed(2)}</Text></View>
+
                         <TouchableOpacity style={styles.confirmButton} onPress={confirmPurchase}>
                             <Text style={styles.confirmText}>Confirmar compra</Text>
                         </TouchableOpacity>
@@ -131,6 +137,13 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         padding: 10,
     },
+    title: {
+        color: '#fff',
+        fontSize: 24,
+        fontWeight: 'bold',
+        marginBottom: 10,
+        textAlign: 'center',
+    },
     emptyText: {
         color: '#ccc',
         fontSize: 16,
@@ -141,7 +154,7 @@ const styles = StyleSheet.create({
         backgroundColor: '#111',
         flexDirection: 'row',
         padding: 10,
-        marginTop: 40,
+        marginTop: 20,
         borderRadius: 8,
         alignItems: 'center',
     },
@@ -154,7 +167,7 @@ const styles = StyleSheet.create({
         flex: 1,
         marginLeft: 10,
     },
-    title: {
+    itemTitle: {
         color: '#fff',
         fontSize: 16,
         marginBottom: 5,
@@ -196,20 +209,29 @@ const styles = StyleSheet.create({
         borderTopWidth: 1,
         marginBottom: 60,
     },
-    totalText: {
+    row: {
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        marginVertical: 5,
+    },
+    label: {
+        color: '#aaa',
+        fontSize: 16,
+    },
+    amount: {
         color: '#fff',
-        fontSize: 18,
-        textAlign: 'center',
-        marginBottom: 10,
+        fontSize: 16,
     },
     confirmButton: {
-        backgroundColor: '#333',
+        backgroundColor: '#f4511e',
         padding: 12,
         borderRadius: 8,
         alignItems: 'center',
+        marginTop: 20,
     },
     confirmText: {
         color: '#fff',
         fontSize: 16,
+        fontWeight: 'bold',
     },
 });
