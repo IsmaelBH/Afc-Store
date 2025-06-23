@@ -9,8 +9,8 @@ import {
     Image,
     ActivityIndicator,
     Alert,
-    Animated,
-    Dimensions
+    StatusBar,
+    Dimensions,
 } from 'react-native';
 import { useDispatch } from 'react-redux';
 import { addToCart } from '../redux/slices/cartSlice';
@@ -20,29 +20,28 @@ import { Product } from '../types';
 
 const { width } = Dimensions.get('window');
 
-const StoreScreen = () => {
+export default function StoreScreen() {
     const [products, setProducts] = useState<Product[]>([]);
     const [loading, setLoading] = useState(true);
     const [selectedProduct, setSelectedProduct] = useState<Product | null>(null);
     const dispatch = useDispatch();
-    const scrollX = new Animated.Value(0);
-
-    const fetchProducts = async () => {
-        try {
-            const snapshot = await getDocs(collection(db, 'products'));
-            const data: Product[] = snapshot.docs.map((doc) => ({
-                id: doc.id,
-                ...doc.data(),
-            })) as Product[];
-            setProducts(data);
-        } catch (error) {
-            console.error('Error fetching products:', error);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     useEffect(() => {
+        const fetchProducts = async () => {
+            try {
+                const snapshot = await getDocs(collection(db, 'products'));
+                const data: Product[] = snapshot.docs.map((doc) => ({
+                    id: doc.id,
+                    ...doc.data(),
+                })) as Product[];
+                setProducts(data);
+            } catch (error) {
+                console.error('Error fetching products:', error);
+            } finally {
+                setLoading(false);
+            }
+        };
+
         fetchProducts();
     }, []);
 
@@ -64,37 +63,31 @@ const StoreScreen = () => {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.storeText}>Destacados</Text>
-            <Animated.FlatList
-                data={products.slice(0, 3)}
-                keyExtractor={(item) => item.id}
-                horizontal
-                showsHorizontalScrollIndicator={false}
-                pagingEnabled
-                snapToAlignment="center"
-                decelerationRate="fast"
-                contentContainerStyle={{ paddingHorizontal: 10, marginTop: 20, paddingBottom: 300 }}
-                onScroll={Animated.event(
-                    [{ nativeEvent: { contentOffset: { x: scrollX } } }],
-                    { useNativeDriver: false }
-                )}
-                renderItem={({ item, index }) => (
-                    <TouchableOpacity
-                        style={styles.featuredCard}
-                        onPress={() => setSelectedProduct(item)}
-                    >
-                        <Image source={{ uri: item.image }} style={styles.featuredImage} />
-                        <Text style={styles.featuredTitle}>{item.name}</Text>
-                        {/* <Text style={styles.featuredPrice}>${item.price}</Text> */}
-                    </TouchableOpacity>
-                )}
-            />
-
             <FlatList
-                data={products}
+                ListHeaderComponent={
+                    <>
+                        <Text style={styles.header}>Destacados</Text>
+                        <View style={styles.featuredCard}>
+                            <TouchableOpacity
+                                onPress={() => setSelectedProduct(products[0])}
+                                style={styles.touchableOverlay}
+                            />
+                            <Image
+                                source={{ uri: products[0].image }}
+                                style={styles.featuredImage}
+                            />
+                            <Text style={styles.featuredTitle}>{products[0].name}</Text>
+                        </View>
+                        <Text style={styles.header}>Todos los productos</Text>
+                    </>
+                }
+                data={products.slice(1)}
                 keyExtractor={(item) => item.id}
                 renderItem={({ item }) => (
-                    <TouchableOpacity style={styles.card} onPress={() => setSelectedProduct(item)}>
+                    <TouchableOpacity
+                        style={styles.card}
+                        onPress={() => setSelectedProduct(item)}
+                    >
                         <Image source={{ uri: item.image }} style={styles.image} />
                         <View style={styles.cardContent}>
                             <Text style={styles.title}>{item.name}</Text>
@@ -118,12 +111,20 @@ const StoreScreen = () => {
                     <View style={styles.modalContent}>
                         {selectedProduct && (
                             <>
-                                <Image source={{ uri: selectedProduct.image }} style={styles.modalImage} />
+                                <Image
+                                    source={{ uri: selectedProduct.image }}
+                                    style={styles.modalImage}
+                                />
                                 <Text style={styles.modalTitle}>{selectedProduct.name}</Text>
                                 <Text style={styles.modalPrice}>Precio: ${selectedProduct.price}</Text>
-                                <Text style={styles.modalDescription}>{selectedProduct.description}</Text>
+                                <Text style={styles.modalDescription}>
+                                    {selectedProduct.description}
+                                </Text>
                                 <TouchableOpacity style={styles.closeButton} onPress={handleAddToCart}>
-                                    <Image source={require('../../assets/icons/cart.png')} style={styles.iconCart} />
+                                    <Image
+                                        source={require('../../assets/icons/cart.png')}
+                                        style={styles.iconCart}
+                                    />
                                     <Text style={styles.textAddToCart}>Agregar al carrito</Text>
                                 </TouchableOpacity>
                             </>
@@ -133,22 +134,14 @@ const StoreScreen = () => {
             </Modal>
         </View>
     );
-};
-
-export default StoreScreen;
+}
 
 const styles = StyleSheet.create({
     container: {
         backgroundColor: '#111',
         flex: 1,
         padding: 10,
-    },
-    storeText: {
-        color: '#fff',
-        fontSize: 20,
-        fontWeight: 'bold',
-        marginTop: 35,
-        textAlign: 'center',
+        paddingTop: 20,
     },
     loadingContainer: {
         flex: 1,
@@ -156,39 +149,49 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    header: {
+        color: '#fff',
+        fontSize: 20,
+        fontWeight: 'bold',
+        marginTop: 10,
+        marginBottom: 10,
+        textAlign: 'center',
+    },
     featuredCard: {
         backgroundColor: '#222',
         borderRadius: 12,
-        marginRight: 16,
-        width: width * 0.8,
-        alignItems: 'center',
-        padding: 12,
+        padding: 10,
+        marginBottom: 20,
+        position: 'relative',
+        overflow: 'hidden',
+    },
+    touchableOverlay: {
+        position: 'absolute',
+        top: 0,
+        left: 0,
+        right: 0,
+        bottom: 0,
+        zIndex: 1,
     },
     featuredImage: {
         width: '100%',
-        height: 300,
+        height: width * 0.6,
         borderRadius: 10,
-        marginBottom: 10,
+        marginBottom: 12,
     },
     featuredTitle: {
         color: '#fff',
         fontSize: 18,
-        fontWeight: 'bold',
         textAlign: 'center',
-    },
-    featuredPrice: {
-        color: '#ccc',
-        fontSize: 16,
-        marginTop: 4,
+        fontWeight: 'bold',
     },
     card: {
         backgroundColor: '#222',
-        marginTop: 8,
+        marginBottom: 12,
         borderRadius: 10,
         padding: 12,
         flexDirection: 'row',
         alignItems: 'center',
-
     },
     image: {
         width: 90,

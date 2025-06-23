@@ -66,7 +66,6 @@ export default function CartScreen() {
 
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>Carrito</Text>
             {items.length === 0 ? (
                 <Text style={styles.emptyText}>Tu carrito está vacío</Text>
             ) : (
@@ -136,6 +135,7 @@ const styles = StyleSheet.create({
         flex: 1,
         backgroundColor: '#000',
         padding: 10,
+        paddingTop: 20,
     },
     title: {
         color: '#fff',
