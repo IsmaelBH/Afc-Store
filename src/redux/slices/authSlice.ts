@@ -3,15 +3,15 @@ import { createSlice } from '@reduxjs/toolkit';
 interface UserState {
     email: string | null;
     idToken: string | null;
-    localId: string | null;
-    fullName?: string | null; // ✅ Agregado
+    uid: string | null; // Cambiamos de localId a uid
+    fullName?: string | null;
 }
 
 const initialState: UserState = {
     email: null,
     idToken: null,
-    localId: null,
-    fullName: null, // ✅ Inicializado
+    uid: null, // Cambiado
+    fullName: null,
 };
 
 const authSlice = createSlice({
@@ -21,14 +21,14 @@ const authSlice = createSlice({
         setUser: (state, action) => {
             state.email = action.payload.email;
             state.idToken = action.payload.idToken;
-            state.localId = action.payload.localId;
-            state.fullName = action.payload.fullName || null; // ✅ Nuevo campo
+            state.uid = action.payload.localId; // Lo renombramos internamente
+            state.fullName = action.payload.fullName || null;
         },
         logout: (state) => {
             state.email = null;
             state.idToken = null;
-            state.localId = null;
-            state.fullName = null; // ✅ También lo limpiamos
+            state.uid = null; // Cambiado
+            state.fullName = null;
         },
     },
 });

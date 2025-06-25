@@ -16,7 +16,7 @@ import { setUser } from '../redux/slices/authSlice';
 const LoginScreen = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [login, { isLoading }] = useLoginMutation();
+    const [login, { isLoading, isError, error }] = useLoginMutation();
     const navigation = useNavigation<any>();
     const dispatch = useDispatch();
 
@@ -28,9 +28,9 @@ const LoginScreen = () => {
 
         try {
             const response: any = await login({ email, password });
+            console.log("RESPUESTA LOGIN:", response);
             if (response?.data) {
                 dispatch(setUser(response.data));
-                // ❌ navigation.navigate('Home'); <- esta línea ya no es necesaria
             } else {
                 Alert.alert('Error', 'Credenciales incorrectas o problema con el servidor.');
             }
@@ -62,6 +62,21 @@ const LoginScreen = () => {
             <TouchableOpacity onPress={onSubmit} style={styles.button}>
                 <Text style={styles.buttonText}>{isLoading ? 'Cargando...' : 'Iniciar sesión'}</Text>
             </TouchableOpacity>
+
+            {isError && (
+                <Text style={styles.errorText}>
+                    {(() => {
+                        if ("data" in (error as any)) {
+                            const message = (error as any)?.data?.error?.message;
+                            if (message === 'INVALID_PASSWORD') return 'Contraseña incorrecta.';
+                            if (message === 'EMAIL_NOT_FOUND') return 'Email no registrado.';
+                            return 'Error al iniciar sesión.';
+                        } else {
+                            return 'Error desconocido.';
+                        }
+                    })()}
+                </Text>
+            )}
 
             <TouchableOpacity onPress={() => navigation.navigate('Register')}>
                 <Text style={styles.link}>¿No tienes cuenta? Registrate aquí</Text>
@@ -108,5 +123,10 @@ const styles = StyleSheet.create({
     link: {
         color: '#ccc',
         marginTop: 10,
+    },
+    errorText: {
+        color: 'red',
+        textAlign: 'center',
+        marginBottom: 10,
     },
 });

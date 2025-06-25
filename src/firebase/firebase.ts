@@ -1,6 +1,8 @@
 import { initializeApp } from 'firebase/app';
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from 'firebase/storage';
+import { getDatabase } from 'firebase/database'; // 👈 IMPORTANTE
+
 import {
   FIREBASE_API_KEY,
   FIREBASE_AUTH_DOMAIN,
@@ -23,7 +25,6 @@ const firebaseConfig = {
 
 const app = initializeApp(firebaseConfig);
 
-const db = getFirestore(app);
-const storage = getStorage(app);
-
-export { db, storage };
+export const db = getFirestore(app);
+export const rtdb = getDatabase(app); // 👈 EXPORT
+export const storage = getStorage(app);

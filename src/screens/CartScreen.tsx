@@ -33,14 +33,14 @@ export default function CartScreen() {
     const total = subtotal + tax;
 
     const confirmPurchase = async () => {
-        if (!user.localId) {
+        if (!user.uid) {
             Alert.alert('Error', 'Debes estar logueado para comprar.');
             return;
         }
 
         try {
             const db = getDatabase();
-            const purchaseRef = ref(db, `purchases/${user.localId}`);
+            const purchaseRef = ref(db, `purchases/${user.uid}`);
             const newPurchaseRef = push(purchaseRef);
 
             const purchaseData = {
@@ -136,13 +136,6 @@ const styles = StyleSheet.create({
         backgroundColor: '#000',
         padding: 10,
         paddingTop: 20,
-    },
-    title: {
-        color: '#fff',
-        fontSize: 24,
-        fontWeight: 'bold',
-        marginBottom: 10,
-        textAlign: 'center',
     },
     emptyText: {
         color: '#ccc',

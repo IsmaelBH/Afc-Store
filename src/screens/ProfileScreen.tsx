@@ -20,7 +20,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import { getDatabase, ref, onValue } from 'firebase/database';
 
 export default function ProfileScreen() {
-    const { email, fullName, localId } = useSelector((state: RootState) => state.auth);
+    const { email, fullName, uid } = useSelector((state: RootState) => state.auth);
     const dispatch = useDispatch();
     const [imageUri, setImageUri] = useState<string | null>(null);
     const [purchases, setPurchases] = useState<any[]>([]);
@@ -28,26 +28,29 @@ export default function ProfileScreen() {
     useEffect(() => {
         const loadImage = async () => {
             const savedUri = await AsyncStorage.getItem(PROFILE_IMAGE_KEY);
-            if (savedUri) {
-                setImageUri(savedUri);
-            }
+            if (savedUri) setImageUri(savedUri);
         };
         loadImage();
-
-        if (localId) {
-            const db = getDatabase();
-            const dbRef = ref(db, `purchases/${localId}`);
-            onValue(dbRef, (snapshot) => {
-                const data = snapshot.val();
-                if (data) {
-                    const parsed = Object.values(data);
-                    setPurchases(parsed.reverse());
-                } else {
-                    setPurchases([]);
-                }
-            });
-        }
     }, []);
+
+    useEffect(() => {
+        if (!uid) return;
+
+        const db = getDatabase();
+        const dbRef = ref(db, `purchases/${uid}`);
+
+        const unsubscribe = onValue(dbRef, (snapshot) => {
+            const data = snapshot.val();
+            if (data) {
+                const parsed = Object.values(data);
+                setPurchases(parsed.reverse());
+            } else {
+                setPurchases([]);
+            }
+        });
+
+        return () => unsubscribe();
+    }, [uid]);
 
     const openCamera = async () => {
         const { status } = await ImagePicker.requestCameraPermissionsAsync();
@@ -79,12 +82,8 @@ export default function ProfileScreen() {
 
     const renderPurchaseCard = ({ item }: { item: any }) => (
         <View style={styles.card}>
-            <Text style={styles.dateText}>
-                📅 {new Date(item.date).toLocaleDateString()}
-            </Text>
-            <Text style={styles.totalText}>
-                💰 Total: ${item.total}
-            </Text>
+            <Text style={styles.dateText}>📅 {new Date(item.date).toLocaleDateString()}</Text>
+            <Text style={styles.totalText}>💰 Total: ${item.total}</Text>
             {item.items.map((prod: any, idx: number) => (
                 <Text key={idx} style={styles.productText}>
                     • {prod.name} x{prod.quantity}
@@ -117,7 +116,7 @@ export default function ProfileScreen() {
 
                 {purchases.length > 0 && (
                     <>
-                        <Text style={[styles.label, { marginTop: 30, }]}>Historial de compras:</Text>
+                        <Text style={[styles.label, { marginTop: 30 }]}>Historial de compras:</Text>
                         <FlatList
                             data={purchases}
                             keyExtractor={(_, index) => index.toString()}

@@ -1,4 +1,3 @@
-// RegisterScreen.tsx
 import React, { useState } from 'react';
 import {
     View,
@@ -21,7 +20,7 @@ const RegisterScreen = ({ navigation }: Props) => {
     const [email, setEmail] = useState('');
     const [fullName, setFullName] = useState('');
     const [password, setPassword] = useState('');
-    const [triggerSignup] = useSignupMutation();
+    const [triggerSignup, { isLoading, isError, error }] = useSignupMutation();
     const dispatch = useDispatch();
 
     const onSubmit = async () => {
@@ -37,11 +36,15 @@ const RegisterScreen = ({ navigation }: Props) => {
                     email: response.email,
                     idToken: response.idToken,
                     localId: response.localId,
-                    fullName, // Esto queda guardado localmente (luego lo puedes persistir en Firestore)
+                    fullName,
                 })
             );
         } catch (err: any) {
-            Alert.alert('Error en registro', err?.data?.error?.message || 'Error desconocido');
+            let errorMessage = 'Error desconocido';
+            if ("data" in err) {
+                errorMessage = err.data?.error?.message || errorMessage;
+            }
+            Alert.alert('Error en registro', errorMessage);
         }
     };
 
@@ -78,7 +81,7 @@ const RegisterScreen = ({ navigation }: Props) => {
             />
 
             <TouchableOpacity style={styles.button} onPress={onSubmit}>
-                <Text style={styles.buttonText}>Crear cuenta</Text>
+                <Text style={styles.buttonText}>{isLoading ? 'Cargando...' : 'Crear cuenta'}</Text>
             </TouchableOpacity>
 
             <TouchableOpacity onPress={() => navigation.navigate('Login')}>

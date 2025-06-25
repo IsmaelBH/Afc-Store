@@ -136,7 +136,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#111",
         flex: 1,
         padding: 10,
-        paddingTop: 40,
+        paddingTop: 30,
 
 
     },
